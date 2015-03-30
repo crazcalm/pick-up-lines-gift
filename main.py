@@ -1,4 +1,46 @@
 import argparse
+import sqlite3
+
+conn = sqlite3.connect("sql/test.db")
+c = conn.cursor()
+
+def get_pickupline():
+    c.execute("SELECT * FROM pickuplines ORDER BY RANDOM() LIMIT 1;")
+    print(c.fetchone()[0])
+    conn.close()
+
+def get_comeback():
+    c.execute("SELECT * FROM comebacks ORDER BY RANDOM() LIMIT 1;")
+    print(c.fetchone()[0])
+    conn.close()
+
+def add_pickupline(line):
+    try:
+        c.execute("INSERT INTO pickuplines VALUES (?)", (line,))
+        conn.commit()
+        conn.close()
+        print("Successfully added: ", line)
+    except:
+        print("Failed to add: ", line)
+
+def add_comeback(line):
+    try:
+        c.execute("INSERT INTO comebacks VALUES (?)", (line,))
+        conn.commit()
+        conn.close()
+        print("Successfully added: ", line)
+    except:
+        print("Failed to add: ", line)
+
+def main(args):
+    if args.comeback:
+        get_comeback()
+    elif args.add_comeback:
+        add_comeback(args.add_comeback)
+    elif args.add_pickupline:
+        add_pickupline(args.add_pickupline)
+    else:
+        get_pickupline()
 
 DESCRIPTION = "A pickup line generator"
 EPILOG = "This project was built for my girlfriend (Jovanna Teran)"
@@ -20,3 +62,9 @@ group1.add_argument("--add_comeback", dest="add_comeback",
 
 args = parser.parse_args()
 print(args)
+
+main(args)
+
+
+if __name__ == '__main__':
+    pass

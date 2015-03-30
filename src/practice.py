@@ -1,5 +1,6 @@
-TABLE = {"\xe2\x80\x99s": "?"}
-
+import sqlite3
+conn = sqlite3.connect("../sql/test.db")
+c = conn.cursor()
 
 def format_line(index, line):
     line = line.replace("\xe2\x80\xa2", "")
@@ -65,6 +66,8 @@ def get_pickup_lines_and_comebacks(content):
     return pickup_lines, comebacks
 
 
+
+
 if __name__ == "__main__":
     content = get_file_content("practice.txt")
     print("len(content): ", len(content))
@@ -82,5 +85,14 @@ if __name__ == "__main__":
     print("len(pickuplines):", len(pickuplines))
     print("len(comeboacks):", len(comebacks))
     for line in comebacks:
-        #print("line: ", line)
+        print("line: ", line)
+        c.execute("INSERT INTO comebacks VALUES (?)", (line,))
+        conn.commit()
         pass
+
+    for line in pickuplines:
+        print("line:", line)
+        c.execute("INSERT INTO pickuplines VALUES (?)", (line,))
+        conn.commit()
+
+    conn.close()
