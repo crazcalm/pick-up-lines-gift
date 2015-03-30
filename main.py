@@ -1,6 +1,12 @@
 import argparse
 import sqlite3
+import os
+import sys
 
+# Adds the src dir to path so that I can import my files with reference to src
+sys.path.insert(0, os.path.abspath('.'))
+cwd = os.getcwd()
+os.chdir(os.path.dirname(__file__))
 conn = sqlite3.connect("sql/test.db")
 c = conn.cursor()
 
@@ -43,12 +49,14 @@ def main(args):
         get_pickupline()
 
 DESCRIPTION = "A pickup line generator"
+PROG = "pickupline"
 EPILOG = "This project was built for my girlfriend (Jovanna Teran)"
 COMEBACK = "Prints a comeback line to the screen."
 ADD_PICKUPLINE = "Allows you to add a pickup line to the database."
 ADD_COMEBACK = "Allows you to add a comeback line to the database."
 
-parser = argparse.ArgumentParser(description=DESCRIPTION, epilog=EPILOG)
+parser = argparse.ArgumentParser(description=DESCRIPTION, epilog=EPILOG,
+    prog=PROG)
 
 group1 = parser.add_mutually_exclusive_group()
 
@@ -61,9 +69,10 @@ group1.add_argument("--add_comeback", dest="add_comeback",
         type=str, help=ADD_COMEBACK)
 
 args = parser.parse_args()
-print(args)
+
 
 main(args)
+os.chdir(cwd)
 
 
 if __name__ == '__main__':
